@@ -1,15 +1,51 @@
-# Mask extractor
+# Mask Extraction LoRA
 
-Problem: There are many good resources for simple mask generation, SAM, Qwen Image Layered, but these each have downsides. SAM works by emitting binary yes/no masks, and Qwen Image Layered outputs relatively small layers. This toolchain was created to build a tool to solve that problem.
+A ComfyUI-based toolchain for generating high-quality alpha masks from images using [Qwen2.5-VL-Image-Edit-2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511).
 
-A picture's worth a thousand words
-(picture of SAM vs LoRA outputs)
+## Problem
 
-If you would like to use this LoRA, download the weights from huggingface and use the example workflow (embedded in png)
+Existing mask generation tools have limitations:
+- **SAM** emits binary yes/no masks, not suitable for compositing
+- **Qwen Image Layered** outputs relatively small layers
 
-Contents of this repository:
-* A ComfyUI workflow to generate high quality alpha masks using description (create a mask of the person in green) or bounding boxes (create a mask of the item in the red outline)
-* A ComfyUI workflow to generate sample images from a much smaller LoRA
-* A tool for editing the resulting dataset from above
+This toolchain solves that by generating clean, high-resolution grayscale alpha masks suitable for professional compositing work.
 
-You can use this toolchain to generate and review more samples for further refinement
+## Example Results
+
+| Input | Output |
+|-------|--------|
+| ![](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction/resolve/main/images/img_00002_.png) | Prompt: "Create a black and white alpha mask for the object with a red outline" |
+| ![](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction/resolve/main/images/img_00003_.png) | Prompt: "Create a black and white alpha mask for the woman, excluding the pinecone" |
+| ![](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction/resolve/main/images/img_00012_.png) | Prompt: "Create a black and white alpha mask for the tree and its foliage" |
+
+## Usage
+
+### LoRA
+
+Download the LoRA from HuggingFace: [Notid/qwen-edit-2511-mask-extraction](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction)
+
+**Trigger word:** `Create a black and white alpha mask of the ...`
+
+Example prompts:
+- `Create a black and white alpha mask of the bucket in the bottom left`
+- `Create a black and white alpha mask of the object with the red outline`
+- `Create a black and white alpha mask of the hat, excluding the man's head`
+
+### Dataset
+
+The training dataset is available on HuggingFace: [Notid/mask_pairs](https://huggingface.co/datasets/Notid/mask_pairs/viewer/default/train?row=99)
+
+## Toolchain Contents
+
+- **ComfyUI workflow** - Generate high-quality alpha masks using text descriptions or bounding boxes
+- **ComfyUI workflow** - Generate sample images for dataset creation
+- **Mask comparison tool** - Review and edit generated mask pairs for refinement
+
+## Potential Improvements
+
+- **Human samples** - The current dataset has very few samples of humans. Adding more high-quality human portrait pairs would improve mask quality for people.
+- **Fine detail (hair)** - More training samples with complex hair details would likely improve the model's ability to generate clean edges around hair and fine strands.
+
+## License
+
+This project is provided as-is for mask extraction workflows.
