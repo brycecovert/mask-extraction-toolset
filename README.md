@@ -24,6 +24,8 @@ This toolchain solves that by generating clean, high-resolution grayscale alpha 
 
 Download the LoRA from HuggingFace: [Notid/qwen-edit-2511-mask-extraction](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction)
 
+For ComfyUI, see the sample_workflows for an example of how to use the LoRA.
+
 **Trigger word:** `Create a black and white alpha mask of the ...`
 
 Example prompts:
