@@ -346,6 +346,7 @@
                 data-has-flag="{{ 'true' if pair.has_flag else 'false' }}"
                 data-input-path="{{ pair.input_full_path }}"
                 data-output-path="{{ pair.output_full_path }}"
+                data-txt-content="{{ pair.txt_content | e }}"
                 alt="{{ pair.filename }}"
             >
             {% if pair.has_flag %}
@@ -372,6 +373,8 @@
             <img id="base-image" src="" alt="Base image">
             <img class="overlay" id="overlay-image" src="" alt="Mask overlay">
         </div>
+        
+        <div class="txt-content-display" id="txt-content-display" style="margin-top: 10px; padding: 10px 15px; background: #1a1a2e; border-radius: 4px; font-size: 14px; color: #ccc; font-style: italic; min-height: 20px;"></div>
         
         <div class="controls">
             <div class="control-group">
@@ -503,6 +506,17 @@
             overlay.src = currentPair.output;
             filenameDisplay.textContent = currentPair.filename;
             document.getElementById('custom-prompt').value = '';
+            
+            const txtContentDisplay = document.getElementById('txt-content-display');
+            const txtContent = item.dataset.txtContent;
+            if (txtContent) {
+                txtContentDisplay.textContent = txtContent;
+                txtContentDisplay.style.display = 'block';
+            } else {
+                txtContentDisplay.textContent = '(no txt file content yet)';
+                txtContentDisplay.style.display = 'block';
+            }
+            
             viewer.classList.add('active');
             updateNavButtons();
         }
@@ -577,14 +591,21 @@
                 });
                 
                 const result = await response.json();
-                if (result.success) {
-                    const filtered = getFilteredItems();
-                    const item = filtered[currentIndex];
-                    const wrapper = item.parentElement;
-                    item.dataset.hasTxt = 'true';
-                    item.dataset.hasFlag = 'false';
-                    wrapper.dataset.hasTxt = 'true';
-                    wrapper.dataset.hasFlag = 'false';
+                    if (result.success) {
+                        const filtered = getFilteredItems();
+                        const item = filtered[currentIndex];
+                        const wrapper = item.parentElement;
+                        item.dataset.hasTxt = 'true';
+                        item.dataset.hasFlag = 'false';
+                        wrapper.dataset.hasTxt = 'true';
+                        wrapper.dataset.hasFlag = 'false';
+                        
+                        // Update txt content display with the new content
+                        const customPrompt = document.getElementById('custom-prompt').value.trim();
+                        const color = labelColor.value;
+                        const newContent = customPrompt || `Create a black and white alpha mask of the object outlined in ${color}`;
+                        item.dataset.txtContent = newContent;
+                        document.getElementById('txt-content-display').textContent = newContent;
                     
                     const existingFlag = wrapper.querySelector('.flag-icon');
                     if (existingFlag) existingFlag.remove();
@@ -627,24 +648,28 @@
                 });
                 
                 const result = await response.json();
-                if (result.success) {
-                    const filtered = getFilteredItems();
-                    const item = filtered[currentIndex];
-                    const wrapper = item.parentElement;
-                    item.dataset.hasFlag = 'true';
-                    wrapper.dataset.hasFlag = 'true';
-                    
-                    const existingCheck = wrapper.querySelector('.checkmark');
-                    if (existingCheck) existingCheck.remove();
-                    
-                    if (!wrapper.querySelector('.flag-icon')) {
-                        const flagIcon = document.createElement('span');
-                        flagIcon.className = 'flag-icon';
-                        flagIcon.textContent = '!';
-                        wrapper.appendChild(flagIcon);
-                    }
-                    
-                    updateVisibility();
+                    if (result.success) {
+                        const filtered = getFilteredItems();
+                        const item = filtered[currentIndex];
+                        const wrapper = item.parentElement;
+                        item.dataset.hasFlag = 'true';
+                        wrapper.dataset.hasFlag = 'true';
+                        
+                        const existingCheck = wrapper.querySelector('.checkmark');
+                        if (existingCheck) existingCheck.remove();
+                        
+                        if (!wrapper.querySelector('.flag-icon')) {
+                            const flagIcon = document.createElement('span');
+                            flagIcon.className = 'flag-icon';
+                            flagIcon.textContent = '!';
+                            wrapper.appendChild(flagIcon);
+                        }
+                        
+                        // Clear txt content display since flag removes the txt file
+                        item.dataset.txtContent = '';
+                        document.getElementById('txt-content-display').textContent = '(no txt file content yet)';
+                        
+                        updateVisibility();
                     if (currentFilter === 'unreviewed') {
                         const newFiltered = getFilteredItems();
                         if (newFiltered.length === 0) {

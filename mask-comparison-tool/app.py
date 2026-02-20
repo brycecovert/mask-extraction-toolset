@@ -28,6 +28,15 @@ def get_image_pairs():
                 txt_path = os.path.join(output_dir, txt_filename)
                 flag_filename = os.path.splitext(filename)[0] + '.flag'
                 flag_path = os.path.join(output_dir, flag_filename)
+                
+                txt_content = ''
+                if os.path.exists(txt_path):
+                    try:
+                        with open(txt_path, 'r') as f:
+                            txt_content = f.read().strip()
+                    except Exception:
+                        txt_content = ''
+                
                 pairs.append({
                     'filename': filename,
                     'input': f'/input/{filename}',
@@ -35,7 +44,8 @@ def get_image_pairs():
                     'input_full_path': input_path,
                     'output_full_path': output_path,
                     'has_txt': os.path.exists(txt_path),
-                    'has_flag': os.path.exists(flag_path)
+                    'has_flag': os.path.exists(flag_path),
+                    'txt_content': txt_content
                 })
     
     return sorted(pairs, key=lambda x: x['filename'])
