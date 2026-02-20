@@ -397,6 +397,11 @@
             </select>
         </div>
         
+        <div class="label-section">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Custom Prompt (optional):</label>
+            <textarea id="custom-prompt" rows="3" style="width: 100%; padding: 10px; border-radius: 4px; border: none; background: #16213e; color: #eee; font-size: 14px; resize: vertical;" placeholder="Leave empty to use the generated prompt above, or type your own custom prompt here..."></textarea>
+        </div>
+        
         <div class="actions">
             <button class="btn btn-primary" id="confirm-btn">Looks Good</button>
             <button class="btn btn-warning" id="flag-btn">Flag for Edit</button>
@@ -497,6 +502,7 @@
             baseImage.src = currentPair.input;
             overlay.src = currentPair.output;
             filenameDisplay.textContent = currentPair.filename;
+            document.getElementById('custom-prompt').value = '';
             viewer.classList.add('active');
             updateNavButtons();
         }
@@ -557,6 +563,7 @@
             if (!currentPair) return;
             
             const color = labelColor.value;
+            const customPrompt = document.getElementById('custom-prompt').value.trim();
             
             try {
                 const response = await fetch('/api/confirm', {
@@ -564,7 +571,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         filename: currentPair.filename,
-                        color: color
+                        color: color,
+                        custom_prompt: customPrompt
                     })
                 });
                 

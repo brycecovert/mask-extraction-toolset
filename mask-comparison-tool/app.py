@@ -63,12 +63,16 @@ def confirm():
     data = request.json
     filename = data.get('filename')
     color = data.get('color')
+    custom_prompt = data.get('custom_prompt', '').strip()
     
     output_dir = app.config['OUTPUT_DIR']
     txt_filename = os.path.splitext(filename)[0] + '.txt'
     txt_path = os.path.join(output_dir, txt_filename)
     
-    content = f"Create a black and white alpha mask of the object outlined in {color}"
+    if custom_prompt:
+        content = custom_prompt
+    else:
+        content = f"Create a black and white alpha mask of the object outlined in {color}"
     
     with open(txt_path, 'w') as f:
         f.write(content)
