@@ -1,5 +1,8 @@
 # Mask Extraction LoRA
 
+[![LoRA](https://img.shields.io/badge/LoRA-Notid%2Fqwen--edit--2511--mask--extraction-blue)](https://huggingface.co/Notid/qwen-edit-2511-mask-extraction)
+[![Dataset](https://img.shields.io/badge/Dataset-Notid%2Fmask--pairs-green)](https://huggingface.co/datasets/Notid/mask_pairs)
+
 A ComfyUI-based toolchain for generating high-quality alpha masks from images using [Qwen2.5-VL-Image-Edit-2511](https://huggingface.co/Qwen/Qwen-Image-Edit-2511).
 
 ## Problem
@@ -39,6 +42,7 @@ The training dataset is available on HuggingFace: [Notid/mask_pairs](https://hug
 
 ## Toolchain Contents
 
+- **AI Toolkit training config** - [ai-toolkit-train-config.yaml](ai-toolkit-train-config.yaml)
 - **ComfyUI workflow** - Generate high-quality alpha masks using text descriptions or bounding boxes
 - **ComfyUI workflow** - Generate sample images for dataset creation
 - **Mask comparison tool** - Review and edit generated mask pairs for refinement
